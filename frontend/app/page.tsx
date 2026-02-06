@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Shield, Lock, Activity, Dna, Database, ChevronRight, Hexagon } from "lucide-react";
+import { Shield, Lock, Activity, Dna, Database, Hexagon } from "lucide-react";
+import ClientWalletWrapper from "./components/ClientWalletWrapper";
 
 export default function Home() {
   return (
@@ -17,9 +18,7 @@ export default function Home() {
             <Link href="#" className="text-gray-400 hover:text-brand-cyan transition-colors">Docs</Link>
           </nav>
           <div className="flex items-center gap-4">
-            <button className="rounded-full bg-brand-cyan px-6 py-2.5 text-sm font-bold text-brand-dark hover:bg-brand-cyan-hover transition-all shadow-[0_0_20px_rgba(0,240,255,0.3)]">
-              Connect Wallet
-            </button>
+            <ClientWalletWrapper />
           </div>
         </div>
       </header>
@@ -108,7 +107,7 @@ export default function Home() {
             <div className="text-center max-w-2xl mx-auto mb-20">
               <h2 className="text-4xl font-bold text-white mb-6">How it Works</h2>
               <p className="text-gray-400">
-                Our protocol leverages Trusted Execution Environments (TEE) and iExec's tech stack to ensure data privacy at rest, in transit, and in use.
+                Our protocol leverages Trusted Execution Environments (TEE) and iExec&apos;s tech stack to ensure data privacy at rest, in transit, and in use.
               </p>
             </div>
 
