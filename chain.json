@@ -1,0 +1,13 @@
+{
+  "default": "bellecour",
+  "chains": {
+    "mainnet": {},
+    "bellecour": {},
+    "arbitrum-mainnet": {},
+    "arbitrum-sepolia": {
+      "id": "421614",
+      "host": "https://sepolia-rollup.arbitrum.io/rpc",
+      "native": true
+    }
+  }
+}
