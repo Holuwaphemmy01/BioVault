@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Shield, Lock, Activity, Dna, Database, Hexagon } from "lucide-react";
+import { Hexagon, Lock, Shield, Activity, Database, Dna } from "lucide-react";
 import ClientWalletWrapper from "./components/ClientWalletWrapper";
 
 export default function Home() {

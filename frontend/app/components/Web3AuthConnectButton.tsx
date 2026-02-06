@@ -19,13 +19,20 @@ const chainConfig = {
   tickerName: "Ethereum",
 };
 
+import PatientDashboard from "./PatientDashboard";
+import RegistrationModal from "./RegistrationModal";
+import { checkUserRegistration, registerUser, UserRole, User } from "../services/api";
+
 export default function Web3AuthConnectButton() {
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
   const [provider, setProvider] = useState<IProvider | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [address, setAddress] = useState<string>("");
-  const [balance, setBalance] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [showRegistration, setShowRegistration] = useState(false);
+
+  // ... (keep init logic same)
 
   useEffect(() => {
     const init = async () => {
@@ -63,6 +70,31 @@ export default function Web3AuthConnectButton() {
 
     init();
   }, []);
+
+  useEffect(() => {
+    if (address && loggedIn) {
+      checkUser();
+    }
+  }, [address, loggedIn]);
+
+  const checkUser = async () => {
+    if (!address) return;
+    const existingUser = await checkUserRegistration(address);
+    if (existingUser) {
+      setUser(existingUser);
+    } else {
+      setShowRegistration(true);
+    }
+  };
+
+  const handleRegister = async (role: UserRole) => {
+    if (!address) return;
+    const newUser = await registerUser(address, role);
+    if (newUser) {
+      setUser(newUser);
+      setShowRegistration(false);
+    }
+  };
 
   const login = async () => {
     if (!web3auth) {
@@ -108,21 +140,27 @@ export default function Web3AuthConnectButton() {
       );
   }
 
-  if (loggedIn) {
+  if (loggedIn && provider) {
     return (
-      <div className="flex items-center gap-4">
-        <div className="flex flex-col text-right">
-            <span className="text-xs text-zinc-400">Connected</span>
-            <span className="text-sm font-mono text-zinc-200">
-                {address.slice(0, 6)}...{address.slice(-4)}
-            </span>
-        </div>
-        <button
-          onClick={logout}
-          className="rounded-full bg-red-500/10 px-6 py-2 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/20"
-        >
-          Disconnect
-        </button>
+      <div className="fixed inset-0 z-[100] flex flex-col h-screen w-full bg-black animate-in fade-in duration-300">
+         {showRegistration ? (
+           <RegistrationModal
+             isOpen={showRegistration}
+             walletAddress={address}
+             onRegister={handleRegister}
+             onClose={() => logout()}
+           />
+         ) : (
+           <PatientDashboard provider={provider} />
+         )}
+         <div className="fixed bottom-4 left-4 z-[110]">
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 text-xs font-bold transition-all backdrop-blur-md"
+            >
+              LOGOUT SESSION
+            </button>
+         </div>
       </div>
     );
   }
@@ -131,9 +169,9 @@ export default function Web3AuthConnectButton() {
     <button
       onClick={login}
       disabled={loading}
-      className="rounded-full bg-blue-600 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-500 disabled:opacity-50"
+      className="rounded bg-brand-cyan px-6 py-2 text-sm font-bold text-brand-dark shadow-lg shadow-brand-cyan/20 hover:bg-brand-cyan-hover hover:scale-105 transition-all disabled:opacity-50"
     >
-      {loading ? "Connecting..." : "Connect with Google"}
+      {loading ? "CONNECTING..." : "CONNECT WALLET"}
     </button>
   );
 }
